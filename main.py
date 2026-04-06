@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from src.core.openai_provider import OpenAIProvider
 from src.agent.agent import ReActAgent
 from src.tools.inventory_tools import INVENTORY_TOOLS
+from src.tools.inventory_tools_v2 import INVENTORY_TOOLS_V2
 from src.chatbot.chatbot import BaselineChatbot
 from src.chatbot.runner import build_provider, run_chat_loop
 
@@ -37,12 +38,15 @@ def parse_args() -> argparse.Namespace:
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def run_agent_cli() -> None:
-    """Run the current ReAct agent flow (existing behavior)."""
-    print("=== ReAct Agent CLI ===")
+    """Run the ReAct agent. VERSION env var selects v1 (default) or v2."""
+    version = os.getenv("VERSION", "v1").strip().lower()
+    tools = INVENTORY_TOOLS if version == "v1" else INVENTORY_TOOLS_V2
+
+    print(f"=== ReAct Agent CLI [version={version}] ===")
     print("Type 'exit' or 'quit' to stop.\n")
 
-    llm = OpenAIProvider(model_name="gpt-5.4-mini")
-    agent = ReActAgent(llm=llm, tools=INVENTORY_TOOLS, max_steps=5)
+    llm = OpenAIProvider(model_name="gpt-4o-mini")
+    agent = ReActAgent(llm=llm, tools=tools, max_steps=5, prompt_version=version)
 
     while True:
         try:

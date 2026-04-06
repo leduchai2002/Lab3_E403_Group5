@@ -4,38 +4,30 @@ from typing import List, Dict, Any, Optional
 from src.core.llm_provider import LLMProvider
 from src.telemetry.logger import logger
 from src.telemetry.metrics import tracker
+from src.agent.prompts import get_system_prompt as _build_prompt
 
 class ReActAgent:
     """
-    SKELETON: A ReAct-style Agent that follows the Thought-Action-Observation loop.
-    Students should implement the core loop logic and tool execution.
+    ReAct-style Agent (Thought → Action → Observation loop).
+    prompt_version selects which system prompt template to use (v1, v2, ...).
     """
-    
-    def __init__(self, llm: LLMProvider, tools: List[Dict[str, Any]], max_steps: int = 5):
+
+    def __init__(
+        self,
+        llm: LLMProvider,
+        tools: List[Dict[str, Any]],
+        max_steps: int = 5,
+        prompt_version: str = "v1",
+    ):
         self.llm = llm
         self.tools = tools
         self.max_steps = max_steps
+        self.prompt_version = prompt_version
         self.history = []
 
     def get_system_prompt(self) -> str:
-        """
-        TODO: Implement the system prompt that instructs the agent to follow ReAct.
-        Should include:
-        1.  Available tools and their descriptions.
-        2.  Format instructions: Thought, Action, Observation.
-        """
         tool_descriptions = "\n".join([f"- {t['name']}: {t['description']}" for t in self.tools])
-        return f"""
-        You are an intelligent assistant. You have access to the following tools:
-        {tool_descriptions}
-
-        Use the following format:
-        Thought: your line of reasoning.
-        Action: tool_name(arguments)
-        Observation: result of the tool call.
-        ... (repeat Thought/Action/Observation if needed)
-        Final Answer: your final response.
-        """
+        return _build_prompt(self.prompt_version, tool_descriptions)
 
     def run(self, user_input: str) -> str:
         """
