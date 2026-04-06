@@ -38,30 +38,42 @@ class ReActAgent:
 
     def run(self, user_input: str) -> str:
         """
-        TODO: Implement the ReAct loop logic.
-        1. Generate Thought + Action.
-        2. Parse Action and execute Tool.
-        3. Append Observation to prompt and repeat until Final Answer.
+        ReAct loop: Thought -> Action -> Observation -> ... -> Final Answer.
         """
         logger.log_event("AGENT_START", {"input": user_input, "model": self.llm.model_name})
-        
+
         current_prompt = user_input
         steps = 0
 
         while steps < self.max_steps:
-            # TODO: Generate LLM response
-            # result = self.llm.generate(current_prompt, system_prompt=self.get_system_prompt())
-            
-            # TODO: Parse Thought/Action from result
-            
-            # TODO: If Action found -> Call tool -> Append Observation
-            
-            # TODO: If Final Answer found -> Break loop
-            
+            result = self.llm.generate(current_prompt, system_prompt=self.get_system_prompt())
+            response_text = result["content"]
+            logger.log_event("LLM_RESPONSE", {"step": steps, "response": response_text})
+
+            # Check for Final Answer
+            final_match = re.search(r"Final Answer:\s*(.*)", response_text, re.DOTALL)
+            if final_match:
+                answer = final_match.group(1).strip()
+                logger.log_event("AGENT_END", {"steps": steps, "answer": answer})
+                return answer
+
+            # Parse Action
+            action_match = re.search(r"Action:\s*(\w+)\((.*?)\)", response_text, re.DOTALL)
+            if action_match:
+                tool_name = action_match.group(1).strip()
+                tool_args = action_match.group(2).strip()
+                observation = self._execute_tool(tool_name, tool_args)
+                logger.log_event("TOOL_CALL", {"tool": tool_name, "args": tool_args, "result": observation})
+                current_prompt = f"{current_prompt}\n{response_text}\nObservation: {observation}"
+            else:
+                # No action and no final answer — treat response as final
+                logger.log_event("AGENT_END", {"steps": steps})
+                return response_text.strip()
+
             steps += 1
-            
-        logger.log_event("AGENT_END", {"steps": steps})
-        return "Not implemented. Fill in the TODOs!"
+
+        logger.log_event("AGENT_END", {"steps": steps, "reason": "max_steps_reached"})
+        return "Max steps reached without a final answer."
 
     def _execute_tool(self, tool_name: str, args: str) -> str:
         """
@@ -69,6 +81,11 @@ class ReActAgent:
         """
         for tool in self.tools:
             if tool['name'] == tool_name:
-                # TODO: Implement dynamic function calling or simple if/else
-                return f"Result of {tool_name}"
+                func = tool.get('func')
+                if callable(func):
+                    try:
+                        return str(func(tool_args))
+                    except Exception as e:
+                        return f"Error calling {tool_name}: {e}"
+                return f"Tool {tool_name} has no callable 'func'."
         return f"Tool {tool_name} not found."
