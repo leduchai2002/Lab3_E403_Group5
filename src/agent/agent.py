@@ -3,6 +3,7 @@ import re
 from typing import List, Dict, Any, Optional
 from src.core.llm_provider import LLMProvider
 from src.telemetry.logger import logger
+from src.telemetry.metrics import tracker
 
 class ReActAgent:
     """
@@ -49,6 +50,12 @@ class ReActAgent:
             result = self.llm.generate(current_prompt, system_prompt=self.get_system_prompt())
             response_text = result["content"]
             logger.log_event("LLM_RESPONSE", {"step": steps, "response": response_text})
+            tracker.track_request(
+                provider=result.get("provider", "unknown"),
+                model=self.llm.model_name,
+                usage=result.get("usage", {}),
+                latency_ms=result.get("latency_ms", 0),
+            )
 
             # Check for Final Answer
             final_match = re.search(r"Final Answer:\s*(.*)", response_text, re.DOTALL)
@@ -58,12 +65,11 @@ class ReActAgent:
                 return answer
 
             # Parse Action
-            action_match = re.search(r"Action:\s*(\w+)\((.*?)\)", response_text, re.DOTALL)
+            action_match = re.search(r"Action:\s*(\w+)\(([^)]*)\)", response_text)
             if action_match:
                 tool_name = action_match.group(1).strip()
-                tool_args = action_match.group(2).strip()
+                tool_args = action_match.group(2).strip().strip('"\'')
                 observation = self._execute_tool(tool_name, tool_args)
-                logger.log_event("TOOL_CALL", {"tool": tool_name, "args": tool_args, "result": observation})
                 current_prompt = f"{current_prompt}\n{response_text}\nObservation: {observation}"
             else:
                 # No action and no final answer — treat response as final

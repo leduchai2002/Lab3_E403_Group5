@@ -1,5 +1,6 @@
 import json
 import os
+import unicodedata
 from typing import List, Dict, Any
 
 DATA_FILE = os.path.join(os.path.dirname(__file__), "../../data/inventory.json")
@@ -17,14 +18,22 @@ def _save(data: List[Dict[str, Any]]) -> None:
 
 # ── Tool functions ─────────────────────────────────────────────────────────────
 
+def _normalize(text: str) -> str:
+    return unicodedata.normalize("NFC", text).lower().strip()
+
+
 def search_inventory(query: str) -> str:
     """
-    Tìm sản phẩm theo tên (không phân biệt hoa thường).
+    Tìm sản phẩm theo tên (không phân biệt hoa thường, chuẩn hóa Unicode).
     Trả về danh sách sản phẩm khớp (id, name, price, stock).
     """
-    query = query.strip().lower()
+    query = _normalize(query.strip('"\''))
+    if not query:
+        items = _load()
+        lines = [f"[{m['id']}] {m['name']} | Giá: {m['price']:,} VND | Tồn kho: {m['stock']}" for m in items]
+        return "\n".join(lines)
     items = _load()
-    matches = [item for item in items if query in item["name"].lower()]
+    matches = [item for item in items if query in _normalize(item["name"])]
     if not matches:
         return f"Không tìm thấy sản phẩm nào khớp với '{query}'."
     lines = [f"[{m['id']}] {m['name']} | Giá: {m['price']:,} VND | Tồn kho: {m['stock']}" for m in matches]
