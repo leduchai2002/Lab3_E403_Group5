@@ -79,13 +79,22 @@ class ReActAgent:
         """
         Helper method to execute tools by name.
         """
+        logger.log_event("TOOL_EXECUTING", {"tool": tool_name, "args": args})
+        print(f"  [Tool] {tool_name}({args})")
+
         for tool in self.tools:
             if tool['name'] == tool_name:
                 func = tool.get('func')
                 if callable(func):
                     try:
-                        return str(func(tool_args))
+                        result = str(func(args))
+                        logger.log_event("TOOL_RESULT", {"tool": tool_name, "result": result})
+                        print(f"  [Observation] {result}")
+                        return result
                     except Exception as e:
-                        return f"Error calling {tool_name}: {e}"
+                        error = f"Error calling {tool_name}: {e}"
+                        logger.log_event("TOOL_ERROR", {"tool": tool_name, "error": str(e)})
+                        print(f"  [Error] {error}")
+                        return error
                 return f"Tool {tool_name} has no callable 'func'."
         return f"Tool {tool_name} not found."

@@ -1,0 +1,10 @@
+[
+  {"id": "P001", "name": "Laptop Dell XPS 13", "price": 28990000, "stock": 15},
+  {"id": "P002", "name": "Chuột Logitech MX Master 3", "price": 1990000, "stock": 42},
+  {"id": "P003", "name": "Bàn phím Keychron K2", "price": 2450000, "stock": 30},
+  {"id": "P004", "name": "Màn hình LG 27UK850", "price": 12500000, "stock": 8},
+  {"id": "P005", "name": "Tai nghe Sony WH-1000XM5", "price": 8490000, "stock": 20},
+  {"id": "P006", "name": "USB-C Hub Anker 7-in-1", "price": 890000, "stock": 60},
+  {"id": "P007", "name": "Webcam Logitech C920", "price": 2190000, "stock": 25},
+  {"id": "P008", "name": "SSD Samsung 970 EVO 1TB", "price": 3200000, "stock": 35}
+]
