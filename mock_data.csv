@@ -1,0 +1,23 @@
+road_id,road_name,area,date,time_range,traffic_level,avg_speed_kmh,congestion,cause,impact_length_km
+RD001,Nguyễn Trãi,Thanh Xuân - Hà Nội,2026-04-06,06:00–08:00,Heavy,12,Có,Giờ cao điểm đi làm,2.3
+RD001,Nguyễn Trãi,Thanh Xuân - Hà Nội,2026-04-06,08:00–11:00,Medium,25,Không,,0
+RD001,Nguyễn Trãi,Thanh Xuân - Hà Nội,2026-04-06,17:00–19:00,Very heavy,8,Có,Tai nạn giao thông,3.1
+RD002,Cầu Giấy,Cầu Giấy - Hà Nội,2026-04-06,06:00–08:00,Medium,22,Không,,0
+RD002,Cầu Giấy,Cầu Giấy - Hà Nội,2026-04-06,11:30–13:00,Heavy,15,Có,Lượng phương tiện tăng đột biến,1.4
+RD002,Cầu Giấy,Cầu Giấy - Hà Nội,2026-04-06,17:30–19:30,Very heavy,9,Có,"Mưa lớn, ngập cục bộ",2.7
+RD003,Võ Văn Kiệt,Quận 1 - TP. HCM,2026-04-06,07:00–09:00,Heavy,18,Có,"Giờ cao điểm, xe container",2
+RD003,Võ Văn Kiệt,Quận 1 - TP. HCM,2026-04-06,09:00–16:00,Light,40,Không,,0
+RD003,Võ Văn Kiệt,Quận 1 - TP. HCM,2026-04-06,18:00–20:00,Medium,26,Không,,0
+RD004,Phạm Văn Đồng,Bắc Từ Liêm - Hà Nội,2026-04-06,06:00–08:30,Very heavy,10,Có,Ùn tắc tại nút giao,3.5
+RD004,Phạm Văn Đồng,Bắc Từ Liêm - Hà Nội,2026-04-06,09:00–16:00,Medium,28,Không,,0
+RD004,Phạm Văn Đồng,Bắc Từ Liêm - Hà Nội,2026-04-06,17:00–19:30,Heavy,14,Có,Giờ cao điểm,2.6
+RD005,Giải Phóng,Hoàng Mai - Hà Nội,2026-04-06,06:30–08:00,Heavy,16,Có,Lưu lượng xe liên tỉnh,2.1
+RD005,Giải Phóng,Hoàng Mai - Hà Nội,2026-04-06,08:00–16:30,Medium,27,Không,,0
+RD005,Giải Phóng,Hoàng Mai - Hà Nội,2026-04-06,17:00–19:00,Very heavy,9,Có,Tai nạn nhẹ,3.0
+RD006,Trường Chinh,Đống Đa - Hà Nội,2026-04-06,07:00–08:30,Heavy,14,Có,Công trình thi công,1.8
+RD006,Trường Chinh,Đống Đa - Hà Nội,2026-04-06,09:00–16:00,Medium,24,Không,,0
+RD006,Trường Chinh,Đống Đa - Hà Nội,2026-04-06,17:30–19:00,Very heavy,8,Có,Giờ tan ca,2.9
+RD007,Điện Biên Phủ,Quận 3 - TP. HCM,2026-04-06,07:00–09:00,Medium,22,Không,,0
+RD007,Điện Biên Phủ,Quận 3 - TP. HCM,2026-04-06,16:30–18:30,Heavy,15,Có,Sự kiện đông người,1.6
+RD008,Xa Lộ Hà Nội,TP. Thủ Đức - TP. HCM,2026-04-06,06:00–08:30,Very heavy,11,Có,Tai nạn xe tải,4.2
+RD008,Xa Lộ Hà Nội,TP. Thủ Đức - TP. HCM,2026-04-06,09:00–17:00,Medium,30,Không,,0
