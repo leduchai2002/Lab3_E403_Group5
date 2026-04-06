@@ -1,10 +1,182 @@
 [
-  {"id": "P001", "name": "Laptop Dell XPS 13", "price": 28990000, "stock": 15},
-  {"id": "P002", "name": "Chuột Logitech MX Master 3", "price": 1990000, "stock": 42},
-  {"id": "P003", "name": "Bàn phím Keychron K2", "price": 2450000, "stock": 30},
-  {"id": "P004", "name": "Màn hình LG 27UK850", "price": 12500000, "stock": 8},
-  {"id": "P005", "name": "Tai nghe Sony WH-1000XM5", "price": 8490000, "stock": 20},
-  {"id": "P006", "name": "USB-C Hub Anker 7-in-1", "price": 890000, "stock": 60},
-  {"id": "P007", "name": "Webcam Logitech C920", "price": 2190000, "stock": 25},
-  {"id": "P008", "name": "SSD Samsung 970 EVO 1TB", "price": 3200000, "stock": 35}
+  {
+    "id": "IP001",
+    "name": "iPhone 13 128GB",
+    "price": 9990000,
+    "stock": 12
+  },
+  {
+    "id": "IP002",
+    "name": "iPhone 14 128GB",
+    "price": 12990000,
+    "stock": 6
+  },
+  {
+    "id": "IP003",
+    "name": "iPhone 14 Plus 128GB",
+    "price": 14990000,
+    "stock": 3
+  },
+  {
+    "id": "IP004",
+    "name": "iPhone 15 128GB",
+    "price": 18990000,
+    "stock": 9
+  },
+  {
+    "id": "IP005",
+    "name": "iPhone 15 Plus 128GB",
+    "price": 21990000,
+    "stock": 5
+  },
+  {
+    "id": "IP006",
+    "name": "iPhone 15 Pro 128GB",
+    "price": 26990000,
+    "stock": 2
+  },
+  {
+    "id": "IP007",
+    "name": "iPhone 15 Pro Max 256GB",
+    "price": 31990000,
+    "stock": 1
+  },
+  {
+    "id": "PROMO01",
+    "name": "Khuyen mai iPhone thang 04 - giam 10% iPhone 14 128GB",
+    "price": 0,
+    "stock": 1
+  },
+  {
+    "id": "PROMO02",
+    "name": "Khuyen mai trade-in thu cu doi moi - toi da 2000000 VND",
+    "price": 0,
+    "stock": 1
+  },
+  {
+    "id": "PROMO03",
+    "name": "Khuyen mai tra gop 0% toi da 12 thang cho iPhone",
+    "price": 0,
+    "stock": 1
+  },
+  {
+    "id": "IP008",
+    "name": "iPhone 15 256GB",
+    "price": 21990000,
+    "stock": 7
+  },
+  {
+    "id": "IP009",
+    "name": "iPhone 15 Pro 256GB",
+    "price": 29990000,
+    "stock": 4
+  },
+  {
+    "id": "IP010",
+    "name": "iPhone 14 256GB",
+    "price": 15990000,
+    "stock": 5
+  },
+  {
+    "id": "IP011",
+    "name": "iPhone 13 256GB",
+    "price": 11990000,
+    "stock": 10
+  },
+  {
+    "id": "IP012",
+    "name": "iPhone SE 2022 128GB",
+    "price": 8990000,
+    "stock": 11
+  },
+  {
+    "id": "IP013",
+    "name": "iPhone 12 64GB",
+    "price": 8490000,
+    "stock": 13
+  },
+  {
+    "id": "IP014",
+    "name": "iPhone 12 128GB",
+    "price": 9290000,
+    "stock": 9
+  },
+  {
+    "id": "PROMO04",
+    "name": "Khuyen mai giam truc tiep 500000 VND cho don tu 15000000",
+    "price": 0,
+    "stock": 1
+  },
+  {
+    "id": "PROMO05",
+    "name": "Khuyen mai student giam 5% toi da 1000000 VND",
+    "price": 0,
+    "stock": 1
+  },
+  {
+    "id": "PROMO06",
+    "name": "Khuyen mai thu cu doi moi tang thu gia den 15%",
+    "price": 0,
+    "stock": 1
+  },
+  {
+    "id": "MB001",
+    "name": "Samsung Galaxy S24 256GB",
+    "price": 19990000,
+    "stock": 6
+  },
+  {
+    "id": "MB002",
+    "name": "Samsung Galaxy S24 Ultra 256GB",
+    "price": 29990000,
+    "stock": 4
+  },
+  {
+    "id": "MB003",
+    "name": "Samsung Galaxy A55 256GB",
+    "price": 9990000,
+    "stock": 12
+  },
+  {
+    "id": "MB004",
+    "name": "Xiaomi 14 256GB",
+    "price": 17990000,
+    "stock": 7
+  },
+  {
+    "id": "MB005",
+    "name": "Xiaomi Redmi Note 13 Pro 5G 256GB",
+    "price": 8990000,
+    "stock": 15
+  },
+  {
+    "id": "MB006",
+    "name": "OPPO Reno11 F 5G 256GB",
+    "price": 8490000,
+    "stock": 10
+  },
+  {
+    "id": "MB007",
+    "name": "vivo V30 256GB",
+    "price": 10490000,
+    "stock": 9
+  },
+  {
+    "id": "MB008",
+    "name": "Google Pixel 8 128GB",
+    "price": 16990000,
+    "stock": 5
+  },
+  {
+    "id": "MB009",
+    "name": "Khuyen mai Samsung - giam 7% cho dong Galaxy S",
+    "price": 0,
+    "stock": 1
+  },
+  {
+    "id": "MB010",
+    "name": "Khuyen mai Android - tang tai nghe Bluetooth cho don tu 12000000",
+    "price": 0,
+    "stock": 1
+  }
 ]
