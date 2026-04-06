@@ -16,12 +16,15 @@ class IndustryLogger:
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
 
-        # File Handler (JSON)
+        # File Handler (JSON) — utf-8 to support all Unicode characters
         log_file = os.path.join(log_dir, f"{datetime.now().strftime('%Y-%m-%d')}.log")
-        file_handler = logging.FileHandler(log_file)
-        
-        # Console Handler
+        file_handler = logging.FileHandler(log_file, encoding="utf-8")
+
+        # Console Handler — utf-8 to avoid cp1252 UnicodeEncodeError on Windows
         console_handler = logging.StreamHandler()
+        console_handler.stream = open(
+            console_handler.stream.fileno(), mode="w", encoding="utf-8", closefd=False
+        )
         
         self.logger.addHandler(file_handler)
         self.logger.addHandler(console_handler)
