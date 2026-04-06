@@ -68,6 +68,7 @@ def __init__(self):
         return (usage.get("total_tokens", 0) / 1000) * 0.01
 ```
 Điểm đáng chú ý: Thu thập telemetry cho mỗi request LLM: `provider`, `model`, `token usage`, `latency`, `cost`, lưu metric theo session (in‑memory) và emit event qua logger.log_event, tính chi phí giả lập dựa trên total tokens (TODO: thay bằng pricing thật).
+
 ---
 ### Cách code tương tác với ReAct loop
     Nhận input → Reason / Plan → Gọi LLM → Nhận output → Act → Lặp lại
@@ -161,10 +162,6 @@ Nguyên nhân khiến Agent v1 thất bại nằm ở thiết kế prompt. Sau k
 
     Observation đóng vai trò như một tín hiệu grounding bắt buộc, giúp kéo agent quay về dữ liệu thực sau mỗi bước suy luận. Khi `search_inventory` trả về danh sách cụ thể từ file JSON, thông tin này được đưa trực tiếp vào context window, qua đó giới hạn không gian suy luận của model và ngăn việc tiếp tục hallucinate dựa trên kiến thức huấn luyện chung.
 ---
----
-
-## IV. Future Improvements (5 Points)
-
 
 ## IV. Future Improvements (5 Points)
 
