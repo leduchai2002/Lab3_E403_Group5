@@ -1,7 +1,7 @@
 # Individual Report: Lab 3 - Chatbot vs ReAct Agent
 
 - **Student Name**: Đặng Anh Quân
-- **Student ID**: SE173035
+- **Student ID**: 2A202600018
 - **Date**: 2026-04-06
 
 ---
