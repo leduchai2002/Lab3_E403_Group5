@@ -9,21 +9,21 @@
 
 ## I. Technical Contribution (15 Points)
 
-I focused on test-data construction, scenario-based test execution, and failure diagnosis from telemetry logs.
+I focused on test-data construction, scenario-based execution, and log-based analysis that fed directly into the final comparative report.
 
 - **Modules Implemented**:
   - `tests/test_agent.py`
   - `data/inventory.json`
-  
 
 - **Contribution Highlights**:
-  - Create mock dataset based on the test scenario
-  - Tạo file test_agent.py từ 5 test case, để ReAct agent đọc dataset và chỉ trả lời dựa trên thông tin của dataset
+  - Built and expanded inventory mock data for phone-store scenarios (price lookup, budget recommendation, promotion, stock status, out-of-dataset query).
+  - Implemented `tests/test_agent.py` to run the same 5 use cases consistently across phases (Single LLM, Agent v1, Agent v2).
+  - Collected and compared per-case outputs, latency, tokens, and cost for model comparison in the group report.
 
 - **Documentation of interaction with ReAct loop**:
   - The test runner sends structured prompts into `src/agent/agent.py`.
   - The agent generates `Thought -> Action`, calls inventory tools from `src/tools/inventory_tools.py`, receives `Observation`, then finalizes `Final Answer`.
-  - This workflow is captured in runtime telemetry logs used for debugging in `2026-04-06.log`.
+  - This workflow is captured in runtime telemetry logs and summarized in the comparative report metrics table.
 
 ---
 
@@ -31,84 +31,91 @@ I focused on test-data construction, scenario-based test execution, and failure 
 
 ### Problem Description
 
-The ReAct agent v1 produced partially correct but inconsistent outputs for store-specific policies.
+The comparative run showed that completion status was high across all phases, but answer quality diverged by case and by policy constraints.
 
 Main issues observed:
-1. Promotion query returned no promotion although promotion records existed.
-2. Out-of-dataset query (Samsung S25 Ultra) did not strictly follow fallback policy.
-3. Output language/style drifted from expected fixed-format responses.
+1. Promotion query still failed to retrieve active promotion information (Case 3).
+2. Out-of-dataset query (Samsung S25 Ultra) was handled safely by Agent v2, but Agent v1 still injected external knowledge (Case 5).
+3. Recommendation behavior differed between v1 and v2 (Case 2), where v1 produced a grounded recommendation while v2 returned a strict "not in stock" response.
 
-### Log Source
+### Evidence Source
 
 - `2026-04-06.log`
 - `tests/test_agent.py`
+- `report/GROUP_REPORT_E403_GROUP5.md`
 
 ### Evidence from Trace
 
-1. Promotion case:
-- Agent called `Action: search_inventory("khuyến mãi")`.
-- Observation returned: no matching item.
-- Then final answer said no active promotion.
+1. Case 2 (best iPhone under 10M):
+- Agent v1 returned grounded recommendation: iPhone 13 128GB at 9,990,000 VND.
+- Agent v2 returned "Sản phẩm không có trong kho." for the same request.
 
-2. Out-of-dataset case:
-- Agent called inventory tool and correctly got no match.
-- But final answer still included external speculation: "chua cong bo chinh thuc", instead of strict fallback phrase.
+2. Case 3 (promotion lookup):
+- All three phases failed to return active promotion details from inventory.
+
+3. Case 5 (Samsung S25):
+- Agent v2 returned strict fallback (not in stock), while Agent v1 and Single LLM added outside information.
+
+4. Phase metrics (from final comparative table):
+- Single LLM: 5 calls, 827 tokens, $0.0083, 6,742 ms.
+- Agent v1: 9 calls, 3,328 tokens, $0.0333, 12,868 ms.
+- Agent v2: 7 calls, 2,460 tokens, $0.0246, 8,367 ms.
 
 ### Diagnosis
 
-Root causes are mainly in prompt/tool-spec alignment and normalization:
+Root causes are mainly in prompt-policy tradeoffs and retrieval normalization:
 
-1. **Query normalization gap**:
-- Inventory promotions are written mostly in non-accented text (`Khuyen mai ...`), but model sometimes searches with accented text (`khuyến mãi`).
-- Simple lowercase matching in search tool is not accent-insensitive, so false negatives occur.
+1. **Normalization gap (Case 3)**:
+- Promotion retrieval is sensitive to lexical variation, causing missed matches.
 
-2. **Policy guardrail gap**:
-- ReAct system prompt does not strongly enforce strict fallback when item is missing in tool results.
-- The model occasionally injects prior knowledge after receiving "not found" observation.
+2. **Policy vs flexibility tradeoff (Cases 2 and 5)**:
+- Looser policy (v1) improves recommendation flexibility but risks external knowledge leakage.
+- Stricter policy (v2) improves safety on unknown items but can over-reject borderline recommendation queries.
 
-3. **Expectation-data mismatch**:
-- Some expected outputs assume specific business states (for example, sold-out status or exact promotion wording), but current dataset may not exactly encode those assumptions.
+3. **Business-rule ambiguity**:
+- The same retrieval pipeline is used for both recommendation and strict policy fallback, which needs clearer separation.
 
 ### Solution Implemented / Proposed
 
 Implemented:
-1. Created explicit test prompts in `tests/test_agent.py` that force tool-first behavior and reduce free-form answering.
-2. Built richer inventory data to cover the intended business scenarios.
+1. Created a repeatable 5-case test runner (`tests/test_agent.py`) for consistent comparison.
+2. Prepared inventory data to support grounded price, stock, and recommendation checks.
+3. Consolidated per-case findings into the final comparative/group report.
 
 Proposed v2 fixes:
-1. Add accent-insensitive normalization in inventory search (Unicode normalization and diacritic removal).
-2. Add strict fallback instruction in system prompt: if tool says not found, answer with policy template only.
-3. Separate promotions into dedicated records/tool for deterministic retrieval.
-4. Add assertion-based tests for exact expected wording when required by rubric.
+1. Add accent-insensitive normalization for promotion retrieval.
+2. Separate recommendation intent from strict "not found" policy path.
+3. Keep strict fallback only for truly out-of-dataset items.
+4. Add regression assertions per case for groundedness and policy compliance.
 
 ---
 
 ## III. Personal Insights: Chatbot vs ReAct (10 Points)
 
 1. **Reasoning**:
-- The `Thought` block improves traceability because we can see why a tool was selected.
-- In debugging, this is much better than a direct chatbot answer because each tool call is inspectable in logs.
+- ReAct provides traceable `Thought -> Action -> Observation` steps, making error analysis practical.
+- Single LLM is simpler and faster but cannot ground answers in inventory data.
 
 2. **Reliability**:
-- ReAct performs better for grounded tasks (price and stock lookup) because it uses `search_inventory`.
-- ReAct can still be worse when guardrails are weak: it may over-generate external knowledge after a failed tool lookup.
+- Based on the final comparison, Single LLM produced 0/5 grounded answers, while Agent v1 and Agent v2 each produced 3/5 grounded answers.
+- Agent v1 was stronger on recommendation quality (Case 2), while Agent v2 was stronger on safety for unknown products (Case 5).
 
 3. **Observation feedback effect**:
-- Observation strongly influences the next step. When observation is clean and matched to expected schema, answers are stable.
-- When observation has lexical mismatch (accented vs non-accented query), the loop proceeds with incorrect assumptions and final answer quality drops.
+- Observation quality directly controls final output quality.
+- Retrieval mismatch in promotion queries shows that tool-grounded systems still depend on robust search normalization.
 
 ---
 
 ## IV. Future Improvements (5 Points)
 
 - **Scalability**:
-  - Split inventory features into domain tools (`search_products`, `search_promotions`, `check_stock`) and move to typed outputs for easier parsing.
+  - Split inventory features into domain tools (`search_products`, `search_promotions`, `check_stock`) and use typed outputs.
 
 - **Safety**:
-  - Enforce policy template for out-of-dataset answers, and block unsupported external speculation after "not found" observations.
+  - Keep strict unknown-item fallback for out-of-dataset queries, and prevent external speculation.
 
 - **Performance**:
-  - Add lightweight cache for repeated inventory queries in the same session and reduce extra loops by early-final-answer conditions.
+  - Reduce extra reasoning loops; current metrics already show v2 improves over v1 (calls, tokens, cost, latency).
 
 ---
 
